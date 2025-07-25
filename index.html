@@ -60,7 +60,6 @@
 </head>
 <body class="bg-gray-900 text-white">
 
-    <!-- Main Menu Screen -->
     <div id="main-menu" class="min-h-screen flex flex-col items-center justify-center p-4">
         <h1 class="text-4xl md:text-5xl font-bold text-purple-400 mb-2 text-center">Côte de Beaune</h1>
         <h2 class="text-2xl md:text-3xl font-semibold mb-8 text-center">A Wine Master's Challenge</h2>
@@ -98,22 +97,18 @@
                 <p class="text-gray-400">Build your knowledge with targeted review.</p>
             </button>
         </div>
-    	
+        
         <button id="ai-settings-btn" class="mt-8 bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
             ⚙️ AI Settings
         </button>
     </div>
 
-    <!-- Game Screen -->
     <div id="game-screen" class="hidden min-h-screen flex flex-col items-center justify-center p-4">
-        <!-- Content will be injected here -->
-    </div>
+        </div>
 
-    <!-- Modals -->
     <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
         <div id="modal-content-wrapper" class="bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl modal-content overflow-y-auto">
-            <!-- Modal content will be injected here -->
-        </div>
+            </div>
     </div>
 
     <script>
@@ -984,7 +979,6 @@
                 { q: "What historical event in the 1870s destroyed many Burgundian vineyards, leading to the replanting of only the best sites?", a: "The arrival of phylloxera." },
                 { q: "What is the Confrérie des Chevaliers du Tastevin?", a: "An exclusive fraternity headquartered at the Château du Clos de Vougeot, dedicated to promoting Burgundy wines." },
                 { q: "Domaine Tollot-Beaut is the best-known producer in which village that contains no Premier Crus?", a: "Chorey-lès-Beaune." },
-                { q: "Which law, established in 1804, is the primary cause of the fragmented vineyard ownership seen in Burgundy today?", a: "The Napoleonic Code of equal inheritance." },
                 { q: "Which famous family name is associated with several top domaines in Chassagne-Montrachet?", a: "Colin, Gagnard, or Morey." },
                 { q: "Who wrote the first major work on the wines of Burgundy in 1728?", a: "Claude Arnoux." },
             ]
@@ -1019,7 +1013,7 @@
         });
 
         aiSettingsBtn.addEventListener('click', showAiSettingsModal);
-    	
+        
         // --- Modal Functions ---
         function showModal(content) {
             modalContentWrapper.innerHTML = content;
@@ -1030,7 +1024,7 @@
             modalContainer.classList.add('hidden');
             modalContentWrapper.innerHTML = '';
         }
-    	
+        
         function showWelcomeModal() {
             if (sessionStorage.getItem('welcomed')) return;
             const content = `
@@ -1114,7 +1108,7 @@
             `;
             showModal(content);
         }
-    	
+        
         function saveApiKey() {
             userApiKey = document.getElementById('api-key-input').value;
             localStorage.setItem('geminiApiKey', userApiKey);
@@ -1144,7 +1138,7 @@
                      resetAndStartGame();
                      return;
                 }
-            	
+                
                 questions = shuffleArray(availableQuestions).slice(0, 10);
                 loadQuestion();
             }
@@ -1174,7 +1168,7 @@
 
             const q = questions[currentQuestionIndex];
             const options = shuffleArray([q.a, ...q.o]);
-        	
+            
             gameScreen.innerHTML = `
                 <div class="w-full max-w-3xl">
                     <div class="flex justify-between items-center mb-2">
@@ -1195,17 +1189,17 @@
                 </div>
             `;
         }
-    	
+        
         function nextQuestion() {
             currentQuestionIndex++;
             loadQuestion();
         }
-    	
+        
         function generateAiButtonHtml(question, isCorrect) {
             if (!question.subjectType || !question.subjectName) {
                 return '';
             }
-        	
+            
             let buttonText = isCorrect ? `➡️ Dive Deeper on ${question.subjectName}` : `💡 Learn More about ${question.subjectName}`;
             if (question.subjectType === 'dish' || question.subjectType === 'wine_pairing') {
                  buttonText = isCorrect ? `➡️ Explain the Pairing for ${question.subjectName}` : `💡 Learn about Pairing with ${question.subjectName}`;
@@ -1218,7 +1212,7 @@
             const q = questions[currentQuestionIndex];
             const isCorrect = selectedOption === q.a;
             const feedbackContainer = document.getElementById('feedback-container');
-        	
+            
             let feedbackHtml = '';
             if (isCorrect) {
                 score++;
@@ -1258,53 +1252,25 @@
             });
             feedbackContainer.innerHTML += `<button onclick="nextQuestion()" class="mt-4 w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">Continue</button>`;
         }
-    	
+        
         // --- Historian's Scroll Logic ---
-        function loadHistorianQuestion() {
-            if (currentQuestionIndex >= questions.length) {
-                showEndGameModal();
-                return;
+        function addToTimeline(eventId) {
+            const eventToAdd = historianAvailableEvents.find(event => event.id === eventId);
+            if (!eventToAdd) return;
+
+            userTimeline.push(eventToAdd);
+
+            const buttonToDisable = document.querySelector(`#available-events .timeline-item[data-id="${eventId}"]`);
+            if (buttonToDisable) {
+                buttonToDisable.disabled = true;
+                buttonToDisable.classList.add('selected', 'opacity-50', 'cursor-not-allowed');
             }
+            renderUserTimeline();
+        }
 
-            const q = questions[currentQuestionIndex];
-            userTimeline = [];
-        	
-            const eventsWithIds = q.events.map((event, index) => ({ ...event, id: `${currentQuestionIndex}-${index}` }));
-            historianAvailableEvents = shuffleArray(eventsWithIds);
-
-            gameScreen.innerHTML = `
-                <div class="w-full max-w-4xl">
-                    <div class="flex justify-between items-center mb-2">
-                        <button onclick="returnToMenu()" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded text-sm">← Menu</button>
-                        <p class="text-center text-gray-400">Question ${currentQuestionIndex + 1} / ${questions.length} | Score: ${score}</p>
-                    </div>
-                    <div class="bg-gray-800 p-6 rounded-lg">
-                        <p class="text-xl text-center font-medium mb-6">${q.question}</p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <h3 class="font-bold text-lg mb-2 text-purple-400 text-center">Available Events</h3>
-                                <div id="available-events" class="space-y-2">
-                                    ${historianAvailableEvents.map(event => `
-                                        <button data-id="${event.id}" class="timeline-item w-full text-left bg-gray-700 p-3 rounded hover:bg-purple-800 transition-colors duration-200">
-                                            ${event.text}
-                                        </button>
-                                    `).join('')}
-                                </div>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-lg mb-2 text-purple-400 text-center">Your Timeline (Earliest to Latest)</h3>
-                                <div id="user-timeline" class="space-y-2 bg-gray-900 p-3 rounded-lg min-h-[200px]"></div>
-                            </div>
-                        </div>
-                        <div class="text-center mt-6">
-                            <button id="submit-timeline" class="bg-purple-700 hover:bg-purple-600 text-white font-bold py-3 px-8 rounded-lg" onclick="checkTimeline()">Submit</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-    	
         function renderUserTimeline() {
             const timelineContainer = document.getElementById('user-timeline');
+            if (!timelineContainer) return;
             timelineContainer.innerHTML = userTimeline.map((event, index) => `
                 <div class="bg-purple-900 p-3 rounded flex items-center justify-between">
                     <span>${index + 1}. ${event.text}</span>
@@ -1327,15 +1293,59 @@
             }
         }
 
+        function loadHistorianQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                showEndGameModal();
+                return;
+            }
+
+            const q = questions[currentQuestionIndex];
+            userTimeline = [];
+            
+            const eventsWithIds = q.events.map((event, index) => ({ ...event, id: `${currentQuestionIndex}-${index}` }));
+            historianAvailableEvents = shuffleArray(eventsWithIds);
+
+            gameScreen.innerHTML = `
+                <div class="w-full max-w-4xl">
+                    <div class="flex justify-between items-center mb-2">
+                        <button onclick="returnToMenu()" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded text-sm">← Menu</button>
+                        <p class="text-center text-gray-400">Question ${currentQuestionIndex + 1} / ${questions.length} | Score: ${score}</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <p class="text-xl text-center font-medium mb-6">${q.question}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-bold text-lg mb-2 text-purple-400 text-center">Available Events</h3>
+                                <div id="available-events" class="space-y-2">
+                                    ${historianAvailableEvents.map(event => `
+                                        <button data-id="${event.id}" class="timeline-item w-full text-left bg-gray-700 p-3 rounded hover:bg-purple-800 transition-colors duration-200" onclick="addToTimeline('${event.id}')">
+                                            ${event.text}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-2 text-purple-400 text-center">Your Timeline (Earliest to Latest)</h3>
+                                <div id="user-timeline" class="space-y-2 bg-gray-900 p-3 rounded-lg min-h-[200px]"></div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-6">
+                            <button id="submit-timeline" class="bg-purple-700 hover:bg-purple-600 text-white font-bold py-3 px-8 rounded-lg" onclick="checkTimeline()">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
         function checkTimeline() {
+            const correctTimeline = [...questions[currentQuestionIndex].events].sort((a, b) => a.date - b.date);
             let isCompletelyCorrect = true;
-            if (userTimeline.length !== questions[currentQuestionIndex].events.length) {
+
+            if (userTimeline.length !== correctTimeline.length) {
                 isCompletelyCorrect = false;
             } else {
-                for (let i = 0; i < userTimeline.length - 1; i++) {
-                    // Check if the date of the current event is greater than the next one.
-                    // If it is, the timeline is not in chronological order.
-                    if (userTimeline[i].date > userTimeline[i+1].date) {
+                for (let i = 0; i < userTimeline.length; i++) {
+                    if (userTimeline[i].text !== correctTimeline[i].text) {
                         isCompletelyCorrect = false;
                         break;
                     }
@@ -1346,11 +1356,9 @@
                 score++;
             }
 
-            const correctTimeline = [...questions[currentQuestionIndex].events].sort((a, b) => a.date - b.date);
-
             const userTimelineHtml = userTimeline.map((event, i) => {
-                const isCorrectSoFar = (i === 0) || (userTimeline[i-1].date <= userTimeline[i].date);
-                const borderColor = isCorrectSoFar ? 'border-green-500' : 'border-red-500';
+                const isCorrectPosition = correctTimeline[i] && correctTimeline[i].text === event.text;
+                const borderColor = isCorrectPosition ? 'border-green-500' : 'border-red-500';
                 return `<li class="p-2 bg-gray-700 rounded border-2 ${borderColor}">${event.text}</li>`;
             }).join('');
 
@@ -1395,7 +1403,7 @@
 
             const modulesToMaster = ['terroir', 'ampelographer', 'lawmaker', 'gastronome', 'critic'];
             const correctLog = JSON.parse(localStorage.getItem('correctlyAnsweredQuestions')) || {};
-        	
+            
             let allMastered = true;
             for (const module of modulesToMaster) {
                 const totalQuestions = gameData[module].questions.length;
@@ -1451,7 +1459,7 @@
                 </div>
             `;
             showModal(content);
-        	
+            
             document.getElementById('select-all-topics').addEventListener('change', (e) => {
                 document.querySelectorAll('#flashcard-topics input[type="checkbox"]').forEach(checkbox => {
                     checkbox.checked = e.target.checked;
@@ -1510,7 +1518,7 @@
                     </div>
                 </div>
             `;
-        	
+            
             document.getElementById('prev-card').addEventListener('click', () => {
                 if (currentFlashcardIndex > 0) {
                     currentFlashcardIndex--;
@@ -1524,7 +1532,7 @@
                 }
             });
         }
-    	
+        
         // --- AI Integration ---
         async function handleAiRequest(subjectType, subjectName) {
             if (!userApiKey) {
@@ -1570,7 +1578,7 @@
                     title = `Expert Overview: ${subjectName}`;
                     prompt = `You are a wine and food expert specializing in ${region}. Provide a concise and informative overview of the following topic: ${subjectName}, ensuring your response is strictly relevant to its context within ${region}. Format in simple HTML.`;
             }
-        	
+            
             showModal(`<div class="p-6 text-center">
                 <h2 class="text-2xl font-bold mb-4 text-purple-400">Generating AI Response...</h2>
                 <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-white mx-auto"></div>
@@ -1581,7 +1589,7 @@
                 const chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
                 const payload = { contents: chatHistory };
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${userApiKey}`;
-            	
+                
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1594,7 +1602,7 @@
                 }
 
                 const result = await response.json();
-            	
+                
                 if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0]) {
                     const text = result.candidates[0].content.parts[0].text;
                     const aiContent = `
