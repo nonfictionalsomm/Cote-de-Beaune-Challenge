@@ -1342,33 +1342,36 @@
         }
 
         function checkTimeline() {
-            const q = questions[currentQuestionIndex];
-            const correctTimeline = [...q.events].sort((a, b) => a.date - b.date);
-            let isCompletelyCorrect = userTimeline.length === correctTimeline.length;
-        	
-            if (isCompletelyCorrect) {
-                for (let i = 0; i < correctTimeline.length; i++) {
-                    if (userTimeline[i].text !== correctTimeline[i].text) {
+            let isCompletelyCorrect = true;
+            if (userTimeline.length !== questions[currentQuestionIndex].events.length) {
+                isCompletelyCorrect = false;
+            } else {
+                for (let i = 0; i < userTimeline.length - 1; i++) {
+                    // Check if the date of the current event is greater than the next one.
+                    // If it is, the timeline is not in chronological order.
+                    if (userTimeline[i].date > userTimeline[i+1].date) {
                         isCompletelyCorrect = false;
                         break;
                     }
                 }
             }
-        	
+            
             if(isCompletelyCorrect) {
                 score++;
             }
 
+            const correctTimeline = [...questions[currentQuestionIndex].events].sort((a, b) => a.date - b.date);
+
             const userTimelineHtml = userTimeline.map((event, i) => {
-                const isEventInCorrectPosition = correctTimeline[i] && correctTimeline[i].text === event.text;
-                const borderColor = isEventInCorrectPosition ? 'border-green-500' : 'border-red-500';
+                const isCorrectSoFar = (i === 0) || (userTimeline[i-1].date <= userTimeline[i].date);
+                const borderColor = isCorrectSoFar ? 'border-green-500' : 'border-red-500';
                 return `<li class="p-2 bg-gray-700 rounded border-2 ${borderColor}">${event.text}</li>`;
             }).join('');
 
             const correctTimelineHtml = correctTimeline.map(e => 
                 `<li class="p-2 bg-gray-700 rounded border-2 border-green-500">${e.text} <span class="text-gray-400 text-sm">(${e.date})</span></li>`
             ).join('');
-        	
+            
             const feedbackContent = `
                 <div class="p-6">
                     <h2 class="text-2xl font-bold mb-4 ${isCompletelyCorrect ? 'text-green-400' : 'text-yellow-400'}">${isCompletelyCorrect ? 'Perfect!' : 'Review Your Timeline'}</h2>
