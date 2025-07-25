@@ -660,13 +660,13 @@
                     { q: "Which producer is known for the monopole 'Clos du Chapitre' in Aloxe-Corton?", a: "There is no monopole producer listed, so this is a trick question.", o: ["Domaine du Pavillon (Albert Bichot)", "Tollot-Beaut", "Comte Senard"], subjectType: 'producer', subjectName: 'Aloxe-Corton Monopoles' },
                     { q: "Which two famous Domaines offer both domaine and négociant production, blurring the lines between the two categories?", a: "Domaine Leroy and Dujac", o: ["Coche-Dury and Roulot", "Comte Armand and Marquis d'Angerville", "Domaine de la Romanée-Conti and Leflaive"], subjectType: 'producer', subjectName: 'Domaine-Négociant Hybrids' },
                     { q: "Which producer based in Pernand-Vergelesses is considered one of the top names for Corton-Charlemagne?", a: "Bonneau du Martray", o: ["Domaine Rapet", "Domaine Dubreuil-Fontaine", "Domaine Rollin"], subjectType: 'producer', subjectName: 'Bonneau du Martray' },
-                    { q: "Who was the influential physician to King Louis XIV who prescribed old burgundy for the monarch's health?", a: "Fagon", o: ["Lavalle", "Arnoux", "Rolin"], subjectType: 'history', subjectName: 'King Louis XIV's Physician' },
-                    { q: "The Beaune Premier Cru 'Clos de l'Ecu' is a monopole of which producer?", a: "Faiveley", o: ["Louis Jadot", "Bouchard Père & Fils", "Jacques Prieur"], subjectType: 'producer', subjectName: 'Faiveley Clos de l'Ecu' },
+                    { q: "Who was the influential physician to King Louis XIV who prescribed old burgundy for the monarch's health?", a: "Fagon", o: ["Lavalle", "Arnoux", "Rolin"], subjectType: 'history', subjectName: 'King Louis XIV\'s Physician' },
+                    { q: "The Beaune Premier Cru 'Clos de l'Ecu' is a monopole of which producer?", a: "Faiveley", o: ["Louis Jadot", "Bouchard Père & Fils", "Jacques Prieur"], subjectType: 'producer', subjectName: 'Faiveley Clos de l\'Ecu' },
                     { q: "What percentage of Côte d'Or wines were domaine-bottled by 1990, a significant increase from just 15% in 1962?", a: "Nearly half", o: ["About 25%", "Over 75%", "Still less than 20%"], subjectType: 'history', subjectName: 'Rise of Domaine Bottling' },
                     { q: "Which family owns the largest parcel of the Chassagne side of Le Montrachet, whose wine is distributed by various négociants?", a: "Baron Thénard", o: ["Marquis de Laguiche", "Ramonet", "Colin"], subjectType: 'producer', subjectName: 'Baron Thénard Montrachet' },
                     { q: "Which producer has a monopole of the Premier Cru 'Clos de la Commaraine' in Pommard?", a: "Louis Jadot / Pierre André (historically)", o: ["Comte Armand", "Joseph Voillot", "De Courcel"], subjectType: 'producer', subjectName: 'Clos de la Commaraine' },
                     { q: "The 1855 classification of Burgundy's vineyards was compiled by whom?", a: "Dr. Jules Lavalle", o: ["The Bordeaux Chamber of Commerce", "Emperor Napoleon III", "The Cistercian Monks"], subjectType: 'history', subjectName: 'Dr. Jules Lavalle' },
-                    { q: "The 'Clos des 60 Ouvrées' in Volnay is a monopole within Les Caillerets owned by which domaine?", a: "Domaine de la Pousse d'Or", o: ["Marquis d'Angerville", "Michel Lafarge", "Comtes Lafon"], subjectType: 'producer', subjectName: 'Pousse d'Or Clos des 60 Ouvrées' },
+                    { q: "The 'Clos des 60 Ouvrées' in Volnay is a monopole within Les Caillerets owned by which domaine?", a: "Domaine de la Pousse d'Or", o: ["Marquis d'Angerville", "Michel Lafarge", "Comtes Lafon"], subjectType: 'producer', subjectName: 'Pousse d\'Or Clos des 60 Ouvrées' },
                     { q: "Which producer owns the monopole Premier Cru 'La Micaude' in Ladoix?", a: "Capitain-Gagnerot", o: ["Edmond Cornu", "Chevalier Père et Fils", "Nudant"], subjectType: 'producer', subjectName: 'Capitain-Gagnerot La Micaude' },
                     { q: "Which producer holds the monopole for the Beaune Premier Cru 'Clos Saint-Landry'?", a: "Bouchard", o: ["Louis Jadot", "Faiveley", "Hospices de Beaune"], subjectType: 'producer', subjectName: 'Bouchard Clos Saint-Landry' },
                     { q: "The oldest négociant house mentioned in the texts, founded in 1720, is what?", a: "Champy", o: ["Bouchard Père & Fils", "Louis Jadot", "Louis Latour"], subjectType: 'producer', subjectName: 'Maison Champy' },
@@ -1255,7 +1255,7 @@
                     btn.classList.remove('hover:bg-purple-700');
                     btn.classList.add('bg-red-700');
                 }
-            };
+            });
             feedbackContainer.innerHTML += `<button onclick="nextQuestion()" class="mt-4 w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">Continue</button>`;
         }
     	
@@ -1302,20 +1302,6 @@
                     </div>
                 </div>
             `;
-        	
-            document.querySelectorAll('#available-events .timeline-item').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const eventId = e.currentTarget.dataset.id;
-                    const event = historianAvailableEvents.find(ev => ev.id === eventId);
-                    if (event && !userTimeline.some(e => e.id === event.id)) {
-                        userTimeline.push(event);
-                        e.currentTarget.classList.add('selected', 'opacity-50', 'cursor-not-allowed');
-                        e.currentTarget.disabled = true;
-                        renderUserTimeline();
-                    }
-                });
-            });
-        }
     	
         function renderUserTimeline() {
             const timelineContainer = document.getElementById('user-timeline');
